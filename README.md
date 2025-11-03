@@ -73,3 +73,25 @@ ansible [core 2.15.13]
   jinja version = 3.1.6
   libyaml = True
 ```
+
+# Atelier 03
+```bash
+sudo tee /etc/hosts > /dev/null <<'EOF'
+# /etc/hosts
+127.0.0.1      localhost.localdomain  localhost
+192.168.56.10  control.sandbox.lan    control
+192.168.56.20  target01.sandbox.lan   target01
+192.168.56.30  target02.sandbox.lan   target02
+192.168.56.40  target03.sandbox.lan   target03
+EOF
+```
+
+```bash
+ssh-keyscan -t rsa target01 target02 target03 >> .ssh/known_hosts
+ssh-keygen
+ssh-copy-id vagrant@target01
+ssh-copy-id vagrant@target02
+ssh-copy-id vagrant@target03
+ansible all -i target01,target02,target03 -u vagrant -m ping
+```
+
