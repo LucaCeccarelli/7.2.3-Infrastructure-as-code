@@ -2,3 +2,74 @@
 ## Installation du labo
 ![labo1](labo-ansible-1.png "Labo 1")
 ![labo1](labo-ansible-2.png "Labo 1")
+# Atelier 01
+## Challenge 1
+```bash
+vagrant up ubuntu
+vagrant ssh ubuntu
+sudo apt update
+apt-cache search --names-only ansible
+sudo apt install -y ansible
+ansible --version
+```
+Version Ansible :
+```bash
+ansible 2.10.8
+  config file = None
+  configured module search path = ['/home/vagrant/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
+  ansible python module location = /usr/lib/python3/dist-packages/ansible
+  executable location = /usr/bin/ansible
+  python version = 3.10.12 (main, Aug 15 2025, 14:32:43) [GCC 11.4.0]
+```
+
+```bash
+exit
+vagrant destroy -f ubuntu
+```
+## Challenge 2
+```
+sudo apt update
+sudo apt install -y ansible
+ansible --version
+```
+
+Version Ansible : 
+```bash
+ansible [core 2.17.14]
+  config file = /etc/ansible/ansible.cfg
+  configured module search path = ['/home/vagrant/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
+  ansible python module location = /usr/lib/python3/dist-packages/ansible
+  ansible collection location = /home/vagrant/.ansible/collections:/usr/share/ansible/collections
+  executable location = /usr/bin/ansible
+  python version = 3.10.12 (main, Aug 15 2025, 14:32:43) [GCC 11.4.0] (/usr/bin/python3)
+  jinja version = 3.0.3
+  libyaml = True
+```
+
+## Challenge 3
+```bash
+vagrant up rocky
+vagrant ssh rocky
+sudo dnf update -y
+sudo dnf search python
+sudo dnf install -y python3.12
+sudo dnf install -y python3.12-pip
+python3 -m venv ~/.venv/ansible
+source ~/.venv/ansible/bin/activate
+pip install --upgrade pip
+pip install ansible
+ansible --version
+```
+
+Version Ansible: 
+```bash
+ansible [core 2.15.13]
+  config file = None
+  configured module search path = ['/home/vagrant/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
+  ansible python module location = /home/vagrant/.venv/ansible/lib64/python3.9/site-packages/ansible
+  ansible collection location = /home/vagrant/.ansible/collections:/usr/share/ansible/collections
+  executable location = /home/vagrant/.venv/ansible/bin/ansible
+  python version = 3.9.21 (main, Aug 19 2025, 00:00:00) [GCC 11.5.0 20240719 (Red Hat 11.5.0-5)] (/home/vagrant/.venv/ansible/bin/python3)
+  jinja version = 3.1.6
+  libyaml = True
+```
