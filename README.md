@@ -4,6 +4,7 @@
 ![labo1](labo-ansible-2.png "Labo 1")
 # Atelier 01
 ## Challenge 1
+Installer Ansible depuis les dépôts officiels Ubuntu.
 ```bash
 vagrant up ubuntu
 vagrant ssh ubuntu
@@ -12,7 +13,7 @@ apt-cache search --names-only ansible
 sudo apt install -y ansible
 ansible --version
 ```
-Version Ansible :
+Version Ansible obtenue :
 ```bash
 ansible 2.10.8
   config file = None
@@ -21,19 +22,20 @@ ansible 2.10.8
   executable location = /usr/bin/ansible
   python version = 3.10.12 (main, Aug 15 2025, 14:32:43) [GCC 11.4.0]
 ```
-
+Nettoyage :
 ```bash
 exit
 vagrant destroy -f ubuntu
 ```
 ## Challenge 2
+Installer Ansible depuis un dépôt PPA tiers.
 ```
 sudo apt update
 sudo apt install -y ansible
 ansible --version
 ```
 
-Version Ansible : 
+Version Ansible obtenue : 
 ```bash
 ansible [core 2.17.14]
   config file = /etc/ansible/ansible.cfg
@@ -45,8 +47,10 @@ ansible [core 2.17.14]
   jinja version = 3.0.3
   libyaml = True
 ```
+La version du dépôt PPA est plus récente que celle du dépôt officiel Ubuntu.
 
 ## Challenge 3
+Installer Ansible dans un environnement virtuel Python.
 ```bash
 vagrant up rocky
 vagrant ssh rocky
@@ -61,7 +65,7 @@ pip install ansible
 ansible --version
 ```
 
-Version Ansible: 
+Version Ansible obtenue: 
 ```bash
 ansible [core 2.15.13]
   config file = None
@@ -75,6 +79,7 @@ ansible [core 2.15.13]
 ```
 
 # Atelier 03
+Configuration du fichier `/etc/hosts` : 
 ```bash
 sudo tee /etc/hosts > /dev/null <<'EOF'
 # /etc/hosts
@@ -85,13 +90,16 @@ sudo tee /etc/hosts > /dev/null <<'EOF'
 192.168.56.40  target03.sandbox.lan   target03
 EOF
 ```
-
+Générer et distribuer la clé SSH : 
 ```bash
 ssh-keyscan -t rsa target01 target02 target03 >> .ssh/known_hosts
 ssh-keygen
 ssh-copy-id vagrant@target01
 ssh-copy-id vagrant@target02
 ssh-copy-id vagrant@target03
+```
+Test de connexion Ansible : 
+```bash
 ansible all -i target01,target02,target03 -u vagrant -m ping
 ```
 
@@ -211,7 +219,7 @@ Affichage de l'espace utilisé par la partition principale sur tous les *Target 
 ```bash
 ansible all -m command -a "df -h /"
 ```
-Nous pouvons remarquer que les differents systemes n'utilisent pas le meme espace systeme : 
+Nous pouvons remarquer que les différents systèmes n’utilisent pas le même espace disque.
 ```bash
 debian | CHANGED | rc=0 >>
 Filesystem                       Size  Used Avail Use% Mounted on
