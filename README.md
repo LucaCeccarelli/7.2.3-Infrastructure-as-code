@@ -185,4 +185,41 @@ Affichage de la première ligne du fichier `/etc/shadow` sur tous les *Target Ho
 ```bash
 ansible all -a "head -n 1 /etc/shadow"
 ```
-
+# Atelier 07
+Installation des paquets `tree`, `git`, et `nmap` : 
+```bash
+cd ansible/projets/ema/
+ansible all -m package -a "name=tree"
+ansible all -m package -a "name=git"
+ansible all -m package -a "name=nmap"
+```
+Désinstallation des paquets `tree`, `git`, et `nmap` : 
+```bash
+ansible all -m package -a "name=tree state=absent"
+ansible all -m package -a "name=git state=absent"
+ansible all -m package -a "name=nmap state=absent"
+```
+Copie du fichier `/etc/fstab` du *Control Host* vers les *Target Hosts* sous forme d'un fichier `/tmp/test3.txt` : 
+```bash
+ansible all -m copy -a "src=/etc/fstab dest=/tmp/test3.txt"
+```
+Suppression du fichier `/tmp/test3.txt` sur les *Target Hosts* en utilisant le module `file` : 
+```bash
+ansible all -m file -a "path=/tmp/test3.txt state=absent"
+```
+Affichage de l'espace utilisé par la partition principale sur tous les *Target Hosts* : 
+```bash
+ansible all -m command -a "df -h /"
+```
+Nous pouvons remarquer que les differents systemes n'utilisent pas le meme espace systeme : 
+```bash
+debian | CHANGED | rc=0 >>
+Filesystem                       Size  Used Avail Use% Mounted on
+/dev/mapper/debian--12--vg-root   62G  1.7G   57G   3% /
+rocky | CHANGED | rc=0 >>
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda2        61G  2.0G   59G   4% /
+suse | CHANGED | rc=0 >>
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda3        64G  2.4G   58G   5% /
+```
