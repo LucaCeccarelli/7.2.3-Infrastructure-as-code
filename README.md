@@ -95,3 +95,94 @@ ssh-copy-id vagrant@target03
 ansible all -i target01,target02,target03 -u vagrant -m ping
 ```
 
+# Atelier 06
+Rendre les *Target Hosts* joignables par leur nom d'hôte simple :
+```bash
+sudo tee /etc/hosts > /dev/null <<'EOF'
+# /etc/hosts
+127.0.0.1      localhost.localdomain  localhost
+192.168.56.10  control.sandbox.lan    control
+192.168.56.20  target01.sandbox.lan   target01
+192.168.56.30  target02.sandbox.lan   target02
+192.168.56.40  target03.sandbox.lan   target03
+EOF
+```
+Configuration de l'authentification par clé SSH avec les trois *Target Hosts* :
+```bash
+ssh-keyscan -t rsa target01 target02 target03 >> .ssh/known_hosts
+ssh-keygen
+ssh-copy-id vagrant@target01
+ssh-copy-id vagrant@target02
+ssh-copy-id vagrant@target03
+```
+Installation de Ansible :
+```bash
+sudo apt update
+sudo apt install -y ansible
+```
+Envoie d'un premier `ping` Ansible sans configuration :
+```bash
+ansible all -i target01,target02,target03 -u vagrant -m ping
+```
+Création du fichier `ansible.cfg` et vérification de sa prise en compte par Ansible : 
+```bash
+mkdir monprojet
+cd monprojet/
+touch ansible.cfg
+ansible --version | head -n 2
+```
+Mise en place de l'environnement :
+```bash
+sudo apt install -y direnv
+echo 'eval "$(direnv hook bash)"' >> ~/.bashrc
+source ~/.bashrc
+echo 'export ANSIBLE_CONFIG=$(expand_path ansible.cfg)' > .envrc
+direnv allow
+```
+Création de l'inventaire :
+```bash
+cat << 'EOF' >> ansible.cfg
+[defaults]
+inventory = ./inventory
+EOF
+```
+```bash
+cat << 'EOF' >> inventory 
+[testlab]
+target01
+target02
+target03
+EOF
+```
+Activation de la journalisation :
+```bash
+mkdir ~/journal
+echo 'log_path = ~/journal/ansible.log' >> ansible.cfg
+
+# Test de la journalisation
+ansible all -i target01,target02,target03 -m ping
+cat ~/journal/ansible.log
+```
+Définition de l'utilisateur `vagrant` pour la connexion aux cibles de notre groupe `[testlab]` :
+```bash
+cat << 'EOF' >> inventory
+
+
+[testlab:vars]
+ansible_python_interpreter=/usr/bin/python3
+ansible_user=vagrant
+EOF
+```
+Envoie d'un `ping` vers le groupe de machines `[all]` : 
+```bash
+ansible all -m ping
+```
+Définition de l'élèvation des droits pour l'utilisateur `vagrant` sur les *Target Hosts* : 
+```bash
+echo 'ansible_become=yes' >> inventory
+```
+Affichage de la première ligne du fichier `/etc/shadow` sur tous les *Target Hosts* : 
+```bash
+ansible all -a "head -n 1 /etc/shadow"
+```
+
